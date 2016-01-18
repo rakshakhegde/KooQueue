@@ -1,6 +1,5 @@
 import sqlite3
-import requests
-from helper import *
+from hacks.kooqueue.helper import *
 import time
 
 '''
@@ -9,7 +8,7 @@ This cron_job.py is being called from a cron file located at .openshift/cron/hou
 
 H = int(time.strftime('%H'))
 print('Hour:', H)
-if not 22 <= H <= 24: # compensates for the time zone problem
+if H!=23 and H!=0: # compensates for the time zone
 	print('exiting...')
 	exit()
 

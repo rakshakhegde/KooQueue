@@ -1,9 +1,8 @@
 import flask
 import xml.etree.ElementTree as ET
-import requests
 from urllib.parse import unquote
 import sqlite3
-from helper import *
+from hacks.kooqueue.helper import *
 
 app = flask.Blueprint('kooqueue', __name__, template_folder='templates')
 
@@ -21,6 +20,7 @@ def home():
 		return kookooResponse(response)
 	response = sendSms(phone_no, message, api_key)
 	rootXML = ET.fromstring(response)
+	print(phone_no, message, api_key)
 	if 'Cannot process the request before your working start hour.' in rootXML[1].text:
 		queue(phone_no, message, api_key)
 	return response
@@ -28,7 +28,7 @@ def home():
 def queue(phone_no, message, api_key):
 	conn = sqlite3.connect(DATA_DIR + DB_FILE_NAME)
 	conn.execute('CREATE TABLE IF NOT EXISTS {} (phone_no text, message text, api_key text)'.format(TABLE_NAME))
-	conn.execute('INSERT INTO {} VALUES (?,?,?)'.format(TABLE_NAME), phone_no, message, api_key)
+	conn.execute('INSERT INTO {} VALUES (?,?,?)'.format(TABLE_NAME), (phone_no, message, api_key))
 	conn.commit()
 	conn.close()
 
@@ -40,8 +40,3 @@ def xmlResponse(xmlString):
 
 def xmlToString(ETdata):
 	return ET.tostring(ETdata, encoding='utf8', method='xml')
-
-def remDbg(debugMsg):
-	from datetime import datetime
-	dateTimeNow = datetime.now().strftime('%y-%m-%d %H:%M:%S')
-	requests.put(dbUrl + 'log/{}.json'.format(dateTimeNow), data='"{}"'.format(debugMsg))

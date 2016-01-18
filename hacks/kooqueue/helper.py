@@ -1,7 +1,8 @@
 import os
+import requests
 
 app_url = 'https://hacks-rakheg.rhcloud.com/kooqueue/'
-DATA_DIR = os.environ['OPENSHIFT_DATA_DIR']
+DATA_DIR = os.environ.get('OPENSHIFT_DATA_DIR')
 TABLE_NAME = 'messages'
 DB_FILE_NAME = 'queuedmsgs.db'
 
