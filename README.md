@@ -19,5 +19,7 @@ message : The message to be sent.
 senderid : The 6 characters senderid which has been setup on your account. For example KOOKOO.
 ```
 >Example:
-1) https://hacks-rakheg.rhcloud.com/kooqueue/?phone_no=9xxxxxxx90&api_key=your_api_key&message=testing
-2) https://hacks-rakheg.rhcloud.com/kooqueue/?phone_no=9xxxxxxx90&api_key=your_api_key&message=testing&senderid=KOOKOO
+>
+>1) https://hacks-rakheg.rhcloud.com/kooqueue/?phone_no=9xxxxxxx90&api_key=your_api_key&message=testing
+>
+>2) https://hacks-rakheg.rhcloud.com/kooqueue/?phone_no=9xxxxxxx90&api_key=your_api_key&message=testing&senderid=KOOKOO
