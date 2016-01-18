@@ -3,14 +3,11 @@ import xml.etree.ElementTree as ET
 import requests
 from urllib.parse import unquote
 import sqlite3
+from helper import *
 
 app = flask.Blueprint('kooqueue', __name__, template_folder='templates')
 
-app_url = 'https://hacks-rakheg.rhcloud.com/kooqueue/'
-TABLE_NAME = 'messages'
-DB_FILE_NAME = 'queuedmsgs.db'
-
-@app.route('/')
+@app.route('/', methods = ['GET', 'POST'])
 def home():
 	params = flask.request.args
 	try:
@@ -29,17 +26,11 @@ def home():
 	return response
 
 def queue(phone_no, message, api_key):
-	import os
-	data_dir = os.environ['OPENSHIFT_DATA_DIR']
-	conn = sqlite3.connect(data_dir + DB_FILE_NAME)
-	c = conn.cursor()
-	c.execute('create table if not exists {} (phone_no text, message text, api_key text)'.format(TABLE_NAME))
-	c.execute('INSERT INTO {} VALUES (?,?,?)'.format(TABLE_NAME), phone_no, message, api_key)
-
-def sendSms(phone_no, message, api_key):
-	msgUrl = 'https://www.kookoo.in/outbound/outbound_sms.php'
-	payload = {'phone_no': phone_no, 'message': message, 'api_key': api_key}
-	return requests.get(msgUrl, params= payload).text
+	conn = sqlite3.connect(DATA_DIR + DB_FILE_NAME)
+	conn.execute('CREATE TABLE IF NOT EXISTS {} (phone_no text, message text, api_key text)'.format(TABLE_NAME))
+	conn.execute('INSERT INTO {} VALUES (?,?,?)'.format(TABLE_NAME), phone_no, message, api_key)
+	conn.commit()
+	conn.close()
 
 def kookooResponse(ETdata):
 	return xmlResponse(xmlToString(ETdata))
